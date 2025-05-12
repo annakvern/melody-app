@@ -1,43 +1,79 @@
-const form = document.getElementById("playlist-form");
 const playlistsContainer = document.getElementById("playlists-container");
+const playlistCreateForm = document.getElementById("playlist-create-form");
+const songForm = document.getElementById("song-form");
+const playlistSelect = document.getElementById("playlist-select");
 
 let playlists = [];
 
-form.addEventListener("submit", (e) => {
+playlistCreateForm.addEventListener("submit", (e) => {
   e.preventDefault();
-
-  const genre = document.getElementById("genre").value.trim();
-  const artist = document.getElementById("artist").value.trim();
-  const album = document.getElementById("album").value.trim();
-  const song = document.getElementById("song").value.trim();
-
-  const playlist = { genre, artist, album, song };
-  playlists.push(playlist);
-
-  renderPlaylists();
-  form.reset();
+  const name = document.getElementById("playlist-name").value.trim();
+  if (name && !playlists.find((p) => p.name === name)) {
+    playlists.push({ name, songs: [] });
+    updatePlaylistSelect();
+    renderPlaylists();
+  }
+  playlistCreateForm.reset();
 });
 
+songForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const selectedPlaylist = playlistSelect.value;
+  const genre = document.getElementById("genre").value.trim();
+  const artist = document.getElementById("artist").value.trim();
+  const song = document.getElementById("song").value.trim();
+  console.log("Submit song form:");
+  console.log("Playlist:", selectedPlaylist);
+  console.log("Genre:", genre);
+  console.log("Artist:", artist);
+  console.log("Song:", song);
+
+  if (selectedPlaylist && genre && artist && song) {
+    const playlist = playlists.find((p) => p.name === selectedPlaylist);
+
+    if (playlist) {
+      playlist.songs.push({ genre, artist, song });
+      renderPlaylists();
+      songForm.reset();
+    } else {
+      console.warn("Playlist not found for:", selectedPlaylist);
+    }
+  }
+});
+
+function updatePlaylistSelect() {
+  playlistSelect.innerHTML = `<option value="">Select Playlist</option>`;
+  playlists.forEach((p) => {
+    const option = document.createElement("option");
+    option.value = p.name;
+    option.textContent = p.name;
+    playlistSelect.appendChild(option);
+  });
+}
+
 function renderPlaylists() {
+  console.log(playlists);
+
   playlistsContainer.innerHTML = "";
 
-  const grouped = groupByGenre(playlists);
+  playlists.forEach((p) => {
+    const playlistDiv = document.createElement("div");
+    playlistDiv.className = "playlist";
+    playlistDiv.innerHTML = `<h3>${p.name}</h3>`;
 
-  for (const genre in grouped) {
-    const genreDiv = document.createElement("div");
-    genreDiv.className = "playlist";
-    genreDiv.innerHTML = `<h3>${genre}</h3>`;
+    if (p.songs.length === 0) {
+      playlistDiv.innerHTML += "<p>No songs yet.</p>";
+    } else {
+      p.songs.forEach((song) => {
+        const songEl = document.createElement("p");
+        songEl.textContent = `${song.genre} - ${song.artist} - ${song.song}`;
+        playlistDiv.appendChild(songEl);
+      });
+    }
 
-    grouped[genre].forEach((item) => {
-      const entry = document.createElement("p");
-      entry.textContent = `${item.artist} - ${item.song} ${
-        item.album ? `(${item.album})` : ""
-      }`;
-      genreDiv.appendChild(entry);
-    });
-
-    playlistsContainer.appendChild(genreDiv);
-  }
+    playlistsContainer.appendChild(playlistDiv);
+  });
 }
 
 function groupByGenre(playlists) {

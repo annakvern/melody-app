@@ -9,14 +9,31 @@
     <main>
       <h1>Melody app</h1>
 
-      <section id="add-playlist">
-        <h2>Create New Playlist</h2>
-        <form id="playlist-form">
+      <section id="create-playlist">
+        <h2>Create Playlist</h2>
+        <form id="playlist-create-form">
+          <input
+            type="text"
+            id="playlist-name"
+            placeholder="Playlist Name"
+            required
+          />
+          <button type="submit">Create</button>
+        </form>
+      </section>
+
+      <section id="add-song">
+        <h2>Add song to playlist</h2>
+        <form id="song-form">
+          <select id="playlist-select" required>
+            <option value="">Select Playlist</option>
+          </select>
+
           <input type="text" id="genre" placeholder="Genre" required />
           <input type="text" id="artist" placeholder="Artist" required />
           <input type="text" id="album" placeholder="Album" />
           <input type="text" id="song" placeholder="Song" required />
-          <button type="submit">Add Playlist</button>
+          <button type="submit">Add Song</button>
         </form>
       </section>
 
