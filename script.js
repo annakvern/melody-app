@@ -1,11 +1,18 @@
+window.addEventListener("DOMContentLoaded", main);
+
 const playlistsContainer = document.getElementById("playlists-container");
 const playlistCreateForm = document.getElementById("playlist-create-form");
 const songForm = document.getElementById("song-form");
 const playlistSelect = document.getElementById("playlist-select");
-
-let playlists = [];
-
 const STORAGE_KEY = "myPlaylists";
+let playlists = loadPlaylists();
+
+function main() {
+  console.log("Loaded playlists from localStorage:", playlists);
+
+  updatePlaylistSelect();
+  renderPlaylists();
+}
 
 function loadPlaylists() {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -23,6 +30,7 @@ playlistCreateForm.addEventListener("submit", (e) => {
     playlists.push({ name, songs: [] });
     updatePlaylistSelect();
     renderPlaylists();
+    savePlaylists();
   }
   playlistCreateForm.reset();
 });
@@ -46,6 +54,7 @@ songForm?.addEventListener("submit", (e) => {
     if (playlist) {
       playlist.songs.push({ genre, artist, song });
       renderPlaylists();
+      savePlaylists();
       songForm.reset();
     } else {
       console.warn("Playlist not found for:", selectedPlaylist);
