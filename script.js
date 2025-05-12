@@ -5,6 +5,17 @@ const playlistSelect = document.getElementById("playlist-select");
 
 let playlists = [];
 
+const STORAGE_KEY = "myPlaylists";
+
+function loadPlaylists() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved ? JSON.parse(saved) : [];
+}
+
+function savePlaylists() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(playlists));
+}
+
 playlistCreateForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const name = document.getElementById("playlist-name").value.trim();
