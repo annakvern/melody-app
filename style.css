@@ -52,6 +52,16 @@ span {
   margin-bottom: 0;
 }
 
-h1 {
+h1,
+h3 {
   color: #cc008f;
+}
+
+h4 {
+  color: #ed8dd1;
+  font-style: oblique;
+}
+
+li {
+  list-style: none;
 }

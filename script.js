@@ -80,29 +80,53 @@ function updatePlaylistSelect() {
 function renderPlaylists() {
   playlistsContainer.innerHTML = "";
 
-  playlists.forEach((p) => {
+  playlists.forEach((playlist) => {
     const playlistDiv = document.createElement("div");
     playlistDiv.className = "playlist";
-    playlistDiv.innerHTML = `<h3>${p.name}</h3>`;
+    playlistDiv.innerHTML = `<h3>${playlist.name}</h3>`;
 
-    let songs = [...p.songs];
+    let songs = [...playlist.songs];
 
     if (songs.length === 0) {
       playlistDiv.innerHTML += "<p>No songs yet.</p>";
     } else {
-      songs.forEach((song) => {
-        const songDiv = document.createElement("div");
-        const songName = document.createElement("p");
-        songName.className = "song-name";
-        const artistName = document.createElement("span");
-        songName.textContent = `${song.song}`;
-        artistName.textContent = `${song.artist} (${song.genre})`;
-        songDiv.append(songName);
-        songDiv.append(artistName);
-        playlistDiv.appendChild(songDiv);
+      const genreGroups = {};
+
+      playlist.songs.forEach((song) => {
+        const { genre, artist, song: title } = song;
+
+        if (!genreGroups[genre]) {
+          genreGroups[genre] = {};
+        }
+
+        if (!genreGroups[genre][artist]) {
+          genreGroups[genre][artist] = [];
+        }
+
+        genreGroups[genre][artist].push(title);
+      });
+
+      Object.entries(genreGroups).forEach(([genre, artists]) => {
+        const genreHeading = document.createElement("h4");
+        genreHeading.textContent = genre;
+        playlistDiv.appendChild(genreHeading);
+
+        Object.entries(artists).forEach(([artist, songs]) => {
+          const artistHeading = document.createElement("p");
+          artistHeading.innerHTML = `<strong>${artist}</strong>`;
+          playlistDiv.appendChild(artistHeading);
+
+          const songList = document.createElement("ul");
+          songs.forEach((title) => {
+            const li = document.createElement("li");
+            li.textContent = title;
+            songList.appendChild(li);
+          });
+
+          playlistDiv.appendChild(songList);
+        });
       });
     }
-
     playlistsContainer.appendChild(playlistDiv);
   });
 }
