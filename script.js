@@ -4,14 +4,23 @@ const playlistsContainer = document.getElementById("playlists-container");
 const playlistCreateForm = document.getElementById("playlist-create-form");
 const songForm = document.getElementById("song-form");
 const playlistSelect = document.getElementById("playlist-select");
+const sortSelect = document.getElementById("sort-select");
+
 const STORAGE_KEY = "myPlaylists";
 let playlists = loadPlaylists();
 
 function main() {
-  console.log("Loaded playlists from localStorage:", playlists);
-
+  setupEventlisteners();
   updatePlaylistSelect();
   renderPlaylists();
+}
+
+function setupEventlisteners() {
+  playlistCreateForm.addEventListener("submit", handleSubmitPlaylist);
+  songForm?.addEventListener("submit", handleSongSubmit);
+  sortSelect.addEventListener("change", () => {
+    renderPlaylists();
+  });
 }
 
 function loadPlaylists() {
@@ -23,7 +32,7 @@ function savePlaylists() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(playlists));
 }
 
-playlistCreateForm.addEventListener("submit", (e) => {
+function handleSubmitPlaylist(e) {
   e.preventDefault();
   const name = document.getElementById("playlist-name").value.trim();
   if (name && !playlists.find((p) => p.name === name)) {
@@ -33,9 +42,9 @@ playlistCreateForm.addEventListener("submit", (e) => {
     savePlaylists();
   }
   playlistCreateForm.reset();
-});
+}
 
-songForm?.addEventListener("submit", (e) => {
+function handleSongSubmit(e) {
   e.preventDefault();
 
   const selectedPlaylist = playlistSelect.value;
@@ -60,7 +69,7 @@ songForm?.addEventListener("submit", (e) => {
       console.warn("Playlist not found for:", selectedPlaylist);
     }
   }
-});
+}
 
 function updatePlaylistSelect() {
   playlistSelect.innerHTML = `<option value="">Select Playlist</option>`;
@@ -73,22 +82,35 @@ function updatePlaylistSelect() {
 }
 
 function renderPlaylists() {
-  console.log(playlists);
-
   playlistsContainer.innerHTML = "";
+  const sortBy = sortSelect.value;
 
   playlists.forEach((p) => {
     const playlistDiv = document.createElement("div");
     playlistDiv.className = "playlist";
     playlistDiv.innerHTML = `<h3>${p.name}</h3>`;
 
-    if (p.songs.length === 0) {
+    let songs = [...p.songs];
+
+    if (sortBy === "artist") {
+      songs.sort((a, b) => a.artist.localeCompare(b.artist));
+    } else if (sortBy === "genre") {
+      songs.sort((a, b) => a.genre.localeCompare(b.genre));
+    }
+
+    if (songs.length === 0) {
       playlistDiv.innerHTML += "<p>No songs yet.</p>";
     } else {
-      p.songs.forEach((song) => {
-        const songEl = document.createElement("p");
-        songEl.textContent = `${song.genre} - ${song.artist} - ${song.song}`;
-        playlistDiv.appendChild(songEl);
+      songs.forEach((song) => {
+        const songDiv = document.createElement("div");
+        const songName = document.createElement("p");
+        songName.className = "song-name";
+        const artistName = document.createElement("span");
+        songName.textContent = `${song.song}`;
+        artistName.textContent = `${song.artist} (${song.genre})`;
+        songDiv.append(songName);
+        songDiv.append(artistName);
+        playlistDiv.appendChild(songDiv);
       });
     }
 

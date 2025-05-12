@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <title>Melody</title>
     <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/7a67359ae7.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <main>
-      <h1>Melody app</h1>
+      <div class="heading">
+        <h1><i class="fa-solid fa-music"></i> Melody app</h1>
+      </div>
 
       <section id="create-playlist">
         <h2>Create Playlist</h2>
@@ -39,6 +45,12 @@
 
       <section id="playlist-list">
         <h2>Playlists</h2>
+        <label for="sort-select">Sort songs by: </label>
+        <select id="sort-select">
+          <option value="none">None</option>
+          <option value="artist">Artist</option>
+          <option value="genre">Genre</option>
+        </select>
         <div id="playlists-container"></div>
       </section>
     </main>

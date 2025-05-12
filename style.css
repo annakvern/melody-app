@@ -23,19 +23,35 @@ input {
 
 button {
   padding: 0.5rem 1rem;
-  background: #007acc;
+  border-radius: 1rem;
+  background: #cc008f;
   color: white;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background: #005fa3;
+  background: #a3005c;
 }
 
 .playlist {
   background: white;
   margin-top: 1rem;
   padding: 1rem;
-  border-left: 5px solid #007acc;
+  border-left: 5px solid #cc008f;
+}
+
+span {
+  color: #ed8dd1;
+  font-style: italic;
+}
+
+.song-name {
+  color: #525252;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+h1 {
+  color: #cc008f;
 }
