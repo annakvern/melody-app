@@ -4,7 +4,6 @@ const playlistsContainer = document.getElementById("playlists-container");
 const playlistCreateForm = document.getElementById("playlist-create-form");
 const songForm = document.getElementById("song-form");
 const playlistSelect = document.getElementById("playlist-select");
-const sortSelect = document.getElementById("sort-select");
 
 const STORAGE_KEY = "myPlaylists";
 let playlists = loadPlaylists();
@@ -18,9 +17,6 @@ function main() {
 function setupEventlisteners() {
   playlistCreateForm.addEventListener("submit", handleSubmitPlaylist);
   songForm?.addEventListener("submit", handleSongSubmit);
-  sortSelect.addEventListener("change", () => {
-    renderPlaylists();
-  });
 }
 
 function loadPlaylists() {
@@ -83,7 +79,6 @@ function updatePlaylistSelect() {
 
 function renderPlaylists() {
   playlistsContainer.innerHTML = "";
-  const sortBy = sortSelect.value;
 
   playlists.forEach((p) => {
     const playlistDiv = document.createElement("div");
@@ -91,12 +86,6 @@ function renderPlaylists() {
     playlistDiv.innerHTML = `<h3>${p.name}</h3>`;
 
     let songs = [...p.songs];
-
-    if (sortBy === "artist") {
-      songs.sort((a, b) => a.artist.localeCompare(b.artist));
-    } else if (sortBy === "genre") {
-      songs.sort((a, b) => a.genre.localeCompare(b.genre));
-    }
 
     if (songs.length === 0) {
       playlistDiv.innerHTML += "<p>No songs yet.</p>";
